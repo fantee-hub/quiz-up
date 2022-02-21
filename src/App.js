@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import Signup from "./components/Signup";
+import Signin from "./components/Signin";
+import { useLocation, useNavigate } from "react-router-dom";
+import Globalstyles from "./styles/Globalstyles";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
+  const { pathname } = useLocation();
+  const history = useNavigate();
+
+  useEffect(() => {
+    if (pathname === "/") {
+      history("/login");
+    }
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <div className="App">
+        <Globalstyles />
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Signin />} />
+        </Routes>
+      </div>
+    </AuthProvider>
   );
 }
 
