@@ -1,20 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase/firebase";
 
 export default function Signin() {
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const history = useNavigate();
+  const { login } = useAuth();
 
   const passwordHandler = () => {
     setShowPassword(!showPassword);
   };
 
+  const signInHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      setError("");
+      setLoading(true);
+      await login(emailRef.current.value, passwordRef.current.value);
+      history("/");
+    } catch {
+      setError("Failed to Login");
+    }
+
+    setLoading(false);
+  };
   return (
     <>
       <SigninContainer>
-        <form>
+        <form onSubmit={signInHandler}>
+          {error && <div className="errorMessage">{error}</div>}
           <div className="form-header">
             <h3>Sign in with your email</h3>
             <span>
@@ -28,6 +52,7 @@ export default function Signin() {
               name="email"
               className="form-input"
               placeholder=" "
+              ref={emailRef}
             />
             <label htmlFor="email" className="form-label">
               Email address
@@ -39,6 +64,7 @@ export default function Signin() {
               type={showPassword ? "text" : "password"}
               className="form-input"
               placeholder=" "
+              ref={passwordRef}
             />
 
             <label htmlFor="password" className="form-label">
@@ -50,7 +76,9 @@ export default function Signin() {
           </div>
 
           <div className="create-account">
-            <button type="submit">Sign in</button>
+            <button type="submit" disabled={loading}>
+              Sign in
+            </button>
           </div>
         </form>
       </SigninContainer>

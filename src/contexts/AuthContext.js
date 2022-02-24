@@ -10,9 +10,16 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState("");
   const [loading, setLoading] = useState(true);
+
   // function that sets up the user account
   function signup(email, password) {
     return auth.createUserWithEmailAndPassword(email, password);
+  }
+  function login(email, password) {
+    return auth.signInWithEmailAndPassword(email, password);
+  }
+  function logout() {
+    return auth.signOut();
   }
 
   // get information after user signs in successfully using the observer onAuthStateChanged
@@ -26,7 +33,9 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    login,
     signup,
+    logout,
   };
 
   return (

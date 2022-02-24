@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import validator from "validator";
 
 export default function Signup() {
@@ -14,9 +15,8 @@ export default function Signup() {
   const lastName = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-  console.log(emailRef);
 
-  console.log(useAuth());
+  const history = useNavigate();
   const { signup, currentUser } = useAuth();
 
   function validateEmail(emailRef, passwordRef) {
@@ -39,15 +39,16 @@ export default function Signup() {
     setShowPassword(!showPassword);
   };
 
-  const signUpHandler = (e) => {
+  const signUpHandler = async (e) => {
     e.preventDefault();
     validateEmail(emailRef, passwordRef);
 
     try {
       setError("");
       setLoading(true);
-      signup(emailRef.current.value, passwordRef.current.value);
-    } catch {
+      await signup(emailRef.current.value, passwordRef.current.value);
+      history("/");
+    } catch (error) {
       setError("Failed to signup account");
     }
 
@@ -57,7 +58,6 @@ export default function Signup() {
     <>
       <SignupContainer>
         <form onSubmit={signUpHandler}>
-          {currentUser.email}
           {error && <div className="errorMessage">{error}</div>}
           <div className="form-header">
             <h3>Sign up with your email</h3>
