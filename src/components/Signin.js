@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase/firebase";
+import { css } from "@emotion/react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Signin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,9 +31,22 @@ export default function Signin() {
       history("/");
     } catch {
       setError("Failed to Login");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
     }
 
     setLoading(false);
+  };
+
+  const override = css`
+    border-color: #ffffff;
+  `;
+  const buttonDisable = {
+    background: "#8a93f7",
+  };
+  const buttonEnable = {
+    default: "#5b69fc",
   };
   return (
     <>
@@ -76,9 +90,21 @@ export default function Signin() {
           </div>
 
           <div className="create-account">
-            <button type="submit" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              style={loading ? buttonDisable : buttonEnable}
+            >
               Sign in
             </button>
+            <div className="spinner">
+              <ClipLoader
+                color={"#ffffff"}
+                loading={loading}
+                css={override}
+                size={35}
+              />
+            </div>
           </div>
         </form>
       </SigninContainer>
@@ -97,6 +123,19 @@ const SigninContainer = styled.div`
     border-radius: 0.7rem;
     background: #ffffff;
     box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+    .errorMessage {
+      text-align: center;
+      background: #d0698b;
+      padding: 0.7rem;
+      border-radius: 0.3rem;
+      margin-bottom: 0.7rem;
+      width: 100%;
+      font-weight: bold;
+      color: #ffffff;
+
+      transition: all 0.3s ease-in-out;
+    }
+
     .form-header {
       padding: 0 0 1rem 0;
       a {
@@ -143,6 +182,7 @@ const SigninContainer = styled.div`
       }
     }
     .create-account {
+      position: relative;
       button {
         width: 100%;
         padding: 1rem;
@@ -153,6 +193,12 @@ const SigninContainer = styled.div`
         background: #5b69fc;
         font-weight: 600;
         color: #ffffff;
+      }
+      .spinner {
+        position: absolute;
+        right: 8rem;
+        top: 0.5rem;
+        text-align: center;
       }
     }
   }

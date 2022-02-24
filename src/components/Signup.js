@@ -6,6 +6,8 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
+import { css } from "@emotion/react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +19,7 @@ export default function Signup() {
   const passwordRef = useRef();
 
   const history = useNavigate();
-  const { signup, currentUser } = useAuth();
+  const { signup } = useAuth();
 
   function validateEmail(emailRef, passwordRef) {
     let emailValidate = validator.isEmail(emailRef.current.value);
@@ -26,12 +28,12 @@ export default function Signup() {
       setError("Please enter a valid email");
       setTimeout(() => {
         setError("");
-      }, 2000);
+      }, 5000);
     } else if (passwordRef.current.value.length < 6) {
       setError("Your password must be at least 6 characters");
       setTimeout(() => {
         setError("");
-      }, 2000);
+      }, 5000);
     }
   }
 
@@ -54,6 +56,10 @@ export default function Signup() {
 
     setLoading(false);
   };
+
+  const override = css`
+    border-color: #ffffff;
+  `;
   return (
     <>
       <SignupContainer>
@@ -124,6 +130,14 @@ export default function Signup() {
             <button type="submit" disabled={loading}>
               Create account
             </button>
+            <div className="spinner">
+              <ClipLoader
+                color={"#ffffff"}
+                loading={loading}
+                css={override}
+                size={35}
+              />
+            </div>
           </div>
         </form>
       </SignupContainer>
