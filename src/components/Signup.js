@@ -52,6 +52,9 @@ export default function Signup() {
       history("/");
     } catch (error) {
       setError("Failed to signup account");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
     }
 
     setLoading(false);
@@ -60,6 +63,12 @@ export default function Signup() {
   const override = css`
     border-color: #ffffff;
   `;
+  const buttonDisable = {
+    background: "#8a93f7",
+  };
+  const buttonEnable = {
+    default: "#5b69fc",
+  };
   return (
     <>
       <SignupContainer>
@@ -127,7 +136,11 @@ export default function Signup() {
           </div>
 
           <div className="create-account">
-            <button type="submit" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              style={loading ? buttonDisable : buttonEnable}
+            >
               Create account
             </button>
             <div className="spinner">
@@ -156,6 +169,18 @@ const SignupContainer = styled.div`
     border-radius: 0.7rem;
     background: #ffffff;
     box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+    .errorMessage {
+      text-align: center;
+      background: #d0698b;
+      padding: 0.7rem;
+      border-radius: 0.3rem;
+      margin-bottom: 0.7rem;
+      width: 100%;
+      font-weight: bold;
+      color: #ffffff;
+
+      transition: all 0.3s ease-in-out;
+    }
     .form-header {
       padding: 0 0 1rem 0;
       a {
@@ -212,6 +237,12 @@ const SignupContainer = styled.div`
         background: #5b69fc;
         font-weight: 600;
         color: #ffffff;
+      }
+      .spinner {
+        position: absolute;
+        right: 8rem;
+        top: 0.5rem;
+        text-align: center;
       }
     }
   }

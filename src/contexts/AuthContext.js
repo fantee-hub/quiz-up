@@ -10,6 +10,8 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState("");
   const [loading, setLoading] = useState(true);
+  const [categoryNumber, setCategoryNumber] = useState("");
+  const [category, setCategory] = useState("");
 
   // function that sets up the user account
   function signup(email, password) {
@@ -36,6 +38,10 @@ export function AuthProvider({ children }) {
     login,
     signup,
     logout,
+    categoryNumber,
+    setCategoryNumber,
+    category,
+    setCategory,
   };
 
   return (
