@@ -135,7 +135,7 @@ function QuizContainer() {
   const timerHandler = (time) => {
     let timeCount = setInterval(() => {
       setTimerCount((time -= 1));
-      if (time == 0) {
+      if (time === 0) {
         clearInterval(timeCount);
 
         allOptions.forEach((option) => {

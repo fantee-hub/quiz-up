@@ -12,7 +12,7 @@ function Preload() {
   const countdown = (timerValue) => {
     time = setInterval(() => {
       setTimer((timerValue -= 1));
-      if (timerValue == 0) {
+      if (timerValue === 0) {
         clearInterval(time);
         setRemovePreload(time);
       }

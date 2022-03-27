@@ -85,6 +85,7 @@ export default function Home() {
         setCategoryNumber(categories.categoryNo.toString());
         setCategory(categories.category);
       }
+      return;
     });
     console.log(e.target.alt);
 
