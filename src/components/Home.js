@@ -11,7 +11,6 @@ import game from "../components/images/game.png";
 import animals from "../components/images/animals.png";
 import maths from "../components/images/maths.png";
 import anime from "../components/images/anime.png";
-import Preload from "./Preload";
 
 export default function Home() {
   const [error, setError] = useState("");
@@ -97,11 +96,16 @@ export default function Home() {
       <HomeContainer>
         <div className="container">
           {error && <div>{error}</div>}
+          <div className="home-header">
+            <button onClick={logOutHandler}>Log out</button>
+            <div className="user-email">
+              <span>{currentUser.email}</span>
+            </div>
+          </div>
 
-          <button onClick={logOutHandler}>Log out</button>
           <div className="home-content">
             <div className="header">
-              <h1>Pick a category</h1>
+              <h1>Choose a category</h1>
             </div>
             <div className="categories">
               <div className="category-content">
@@ -176,8 +180,18 @@ const HomeContainer = styled.div`
   padding: 2rem 5rem;
   min-height: 100vh;
   background: #e0e0e0;
+
+  .home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .user-email {
+      color: #646464;
+    }
+  }
   button {
     padding: 0.7rem 1.5rem;
+    margin-bottom: 1rem;
     outline: none;
     border: none;
     border-radius: 0.3rem;
@@ -200,12 +214,11 @@ const HomeContainer = styled.div`
     }
     .categories {
       padding-top: 2rem;
-      max-width: 45rem;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-between;
-      column-gap: 5rem;
+
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      justify-items: center;
+      align-items: center;
 
       .category-content div {
         border-radius: 0.3rem;
@@ -231,5 +244,8 @@ const HomeContainer = styled.div`
         }
       }
     }
+  }
+  @media screen and (max-width: 600px) {
+    padding: 2rem 1rem;
   }
 `;

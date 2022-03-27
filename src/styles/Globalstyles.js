@@ -5,6 +5,7 @@ const Globalstyles = createGlobalStyle`
         padding:0;
         margin:0;
         box-sizing:border-box;
+       
     }
     body{
         font-family: 'Nunito Sans', sans-serif;

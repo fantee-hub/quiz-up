@@ -4,32 +4,29 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getQuizzes } from "../app/reducers/quizReducer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
 
 function QuizContainer() {
   const { quizzes, isLoaded } = useSelector(getQuizzes);
   const totalQuizLength = quizzes.results.length;
-  // console.log(quizzes, isLoaded);
+
   const [counter, setCounter] = useState(0);
   const [allOptions, setAllOptions] = useState(null);
   const [option_list, setOptionList] = useState(null);
-  const [quizTimer, setQuizTimer] = useState(null);
+
   const [showResult, setShowResult] = useState(null);
   const [showQuiz, setShowQuiz] = useState(null);
   const [quizScore, setQuizScore] = useState(0);
-  const [shuffleArray, setShuffleArray] = useState([]);
-
-  // const [showAnswer, setShowAnswer] = useState(false);
+  const [timerCount, setTimerCount] = useState(15);
+  const [intervalval, setIntervalval] = useState();
 
   const history = useNavigate();
-  // console.log(showResult);
+
   const nextButton = useRef(null);
   const resultText = useRef(null);
-  console.log(resultText);
-  // console.log(nextButton.current);
 
-  let timeCount;
   let quizTImevalue = 15;
-  let score = 0;
 
   const inCorrectAnswers = quizzes.results[counter].incorrect_answers;
   const correctAnswer = quizzes.results[counter].correct_answer;
@@ -69,26 +66,30 @@ function QuizContainer() {
     if (counter !== 0) {
       setTheOptions(shuffleAnswers(answers));
     }
+    console.log("hey");
   }, [counter]);
 
-  // let shuffledAnswers = () => {
-  //   console.log("fsd");
-  //   return shuffleAnswers(answers);
-  // };
-  //console.log(shuffledAnswers, totalQuizLength);
   useEffect(() => {
     const allOptions = document.querySelectorAll(".option");
     const option_list = document.querySelector(".option-list");
-    const timerValue = document.querySelector(".timer .time-sec");
     const showResult = document.querySelector(".result-box");
     const showQuiz = document.querySelector(".show-quiz");
-    console.log(allOptions);
-    setAllOptions(allOptions);
+    console.log("hey 1");
     setOptionList(option_list);
-    setQuizTimer(timerValue);
     setShowResult(showResult);
     setShowQuiz(showQuiz);
-    //setShuffleArray(shuffleAnswers(answers));
+    setAllOptions(allOptions);
+    if (allOptions) {
+      timerHandler(quizTImevalue);
+    }
+
+    return () => {
+      setAllOptions(null);
+      setOptionList(null);
+
+      setShowResult(null);
+      setShowQuiz(null);
+    };
   }, []);
 
   const loadNextQue = () => {
@@ -105,21 +106,16 @@ function QuizContainer() {
     if (counter < totalQuizLength - 1) {
       setCounter(counter + 1);
       nextButton.current.style.display = "none";
-      // timerHandler(quizTImevalue);
+      clearInterval(intervalval);
+      timerHandler(quizTImevalue);
     } else {
-      console.log("quiz completed");
-      // console.log(showResult);
       showResultHandler();
-
-      // setShowAnswer(true);
-      // console.log(showAnswer);
     }
   };
   const checkCorrectAnswer = (options, index) => {
+    clearInterval(intervalval);
     if (options === decodedAnswer) {
-      score += 1;
       setQuizScore(quizScore + 1);
-      console.log(quizScore);
       allOptions[index].classList.add("correctActive");
     } else {
       allOptions[index].classList.add("wrongActive");
@@ -137,10 +133,24 @@ function QuizContainer() {
   };
 
   const timerHandler = (time) => {
-    timeCount = setInterval(() => {
-      quizTimer.textContent = time;
-      time--;
+    let timeCount = setInterval(() => {
+      setTimerCount((time -= 1));
+      if (time == 0) {
+        clearInterval(timeCount);
+
+        allOptions.forEach((option) => {
+          if (option.textContent === decodedAnswer) {
+            option.classList.add("correctActive");
+          }
+        });
+        allOptions.forEach((option) => {
+          option.classList.add("disabled");
+        });
+        nextButton.current.style.display = "block";
+      }
     }, 1000);
+
+    setIntervalval(timeCount);
   };
 
   const showResultHandler = () => {
@@ -160,7 +170,7 @@ function QuizContainer() {
     }
   };
 
-  const resultHandler = (e) => {
+  const resultHandler = () => {
     history("/");
     window.location.reload(false);
   };
@@ -175,7 +185,11 @@ function QuizContainer() {
               <div className="title">Quiz Up</div>
               <div className="timer">
                 <div className="time-text">Time Left</div>
-                <div className="time-sec">15</div>
+                <div
+                  className={`time-sec ${timerCount <= 5 ? "time-off" : ""}`}
+                >
+                  {timerCount}
+                </div>
               </div>
             </header>
             <section>
@@ -220,12 +234,14 @@ function QuizContainer() {
       )}
       <ResultBox>
         <div className="result-box">
-          <div className="icon">crown icon here</div>
+          <div className="icon">
+            <FontAwesomeIcon icon={faCrown} />
+          </div>
 
           <div className="complete-text">You've completed the Quiz!</div>
           <div className="score-text" ref={resultText}></div>
           <div className="buttons">
-            <button onClick={(e) => resultHandler(e)}>Go back home</button>
+            <button onClick={() => resultHandler()}>Go back home</button>
           </div>
         </div>
       </ResultBox>
@@ -234,14 +250,37 @@ function QuizContainer() {
 }
 
 const QuizBox = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #e0e0e0;
+
   .show-quiz {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 30rem;
-    box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+    box-shadow: -20px 20px 60px #bebebe, 20px -20px 60px #ffffff;
     border-radius: 0.3rem;
+    @media screen and (max-width: 700px) {
+      width: 25rem;
+    }
+    @media screen and (max-width: 450px) {
+      max-width: 23rem;
+    }
+    @media screen and (max-width: 380px) {
+      max-width: 20rem;
+    }
+    .timer {
+      background: #19bc8b;
+      padding: 0.6rem;
+      color: #f0f0f0;
+      border-radius: 0.3rem;
+      .time-sec {
+        font-weight: 600;
+      }
+      .time-sec.time-off {
+        color: red;
+      }
+    }
   }
 
   .show-quiz.activeQuiz {
@@ -249,10 +288,7 @@ const QuizBox = styled.div`
     pointer-events: none;
   }
   header {
-    position: relative;
-    z-index: 99;
-    height: 4.4rem;
-    padding: 0 2rem;
+    padding: 1rem 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -274,15 +310,15 @@ const QuizBox = styled.div`
   section {
     padding: 1.6rem 1.9rem 1.6rem 1.9rem;
     .que-text {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 600;
     }
     .option-list {
       padding: 1.25rem 0;
       display: block;
       .option {
-        background: aliceblue;
-        border: 1px solid #19bc8b;
+        background: #f0f0f0;
+        border: 1px solid #e6e6e6;
         border-radius: 0.3rem;
         padding: 0.8rem 0.9rem;
         margin-bottom: 1rem;
@@ -312,13 +348,26 @@ const QuizBox = styled.div`
         pointer-events: none;
       }
     }
+    @media screen and (max-width: 700px) {
+      .que-text {
+        font-size: 1.1rem;
+      }
+      .option-list {
+        .option {
+          font-size: 0.9rem;
+        }
+      }
+    }
+    @media screen and (max-width: 500px) {
+      padding: 1.2rem 1rem 1.2rem 1rem;
+    }
   }
   footer {
-    height: 4.4rem;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 4.4rem;
     padding: 0 2rem;
     .total-que span {
       display: flex;
@@ -346,6 +395,9 @@ const QuizBox = styled.div`
         background-color: #2db38a;
       }
     }
+    @media screen and (max-width: 500px) {
+      padding: 0 1rem;
+    }
   }
 `;
 
@@ -365,10 +417,24 @@ const ResultBox = styled.div`
     align-items: center;
     text-align: center;
     opacity: 0;
+    display: none;
     pointer-events: none;
+    @media screen and (max-width: 700px) {
+      width: 25rem;
+    }
+    @media screen and (max-width: 450px) {
+      max-width: 23rem;
+      padding: 1.2rem 1rem;
+      font-size: 0.9rem;
+    }
+    @media screen and (max-width: 380px) {
+      max-width: 20rem;
+    }
   }
   .result-box.activeResult {
     opacity: 1;
+    display: flex;
+    text-align: center;
     pointer-events: auto;
     z-index: 999;
   }

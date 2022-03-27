@@ -117,12 +117,13 @@ const SigninContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #e0e0e0;
   form {
-    min-width: 30rem;
+    width: 30rem;
     padding: 2rem 3rem;
     border-radius: 0.7rem;
-    background: #ffffff;
-    box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
+    background: linear-gradient(225deg, #cacaca, #f0f0f0);
+    box-shadow: -20px 20px 60px #bebebe, 20px -20px 60px #ffffff;
     .errorMessage {
       text-align: center;
       background: #d0698b;
@@ -157,6 +158,7 @@ const SigninContainer = styled.div`
         font-size: 1rem;
         border: 1px solid #cad0c9;
         outline: none;
+        background: #f0f0f0;
       }
 
       .eye {
@@ -200,6 +202,26 @@ const SigninContainer = styled.div`
         top: 0.5rem;
         text-align: center;
       }
+    }
+    @media screen and (max-width: 500px) {
+      max-width: 25rem;
+      padding: 2rem 1.5rem;
+      .create-account {
+        .spinner {
+          right: 6rem;
+        }
+      }
+    }
+    @media screen and (max-width: 420px) {
+      max-width: 23rem;
+      padding: 2rem 1.5rem;
+    }
+    @media screen and (max-width: 380px) {
+      max-width: 20rem;
+    }
+    @media screen and (max-width: 328px) {
+      max-width: 18rem;
+      padding: 2rem 1rem;
     }
   }
 `;

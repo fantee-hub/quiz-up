@@ -1,16 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 function Preload() {
   const [removePreload, setRemovePreload] = useState(null);
-  const timeRef = useRef(null);
+
+  const [timer, setTimer] = useState(5);
+
   let countDownValue = 5;
+
   let time;
   const countdown = (timerValue) => {
     time = setInterval(() => {
-      timeRef.current.innerHTML = `<h1> ${timerValue}<h1>`;
-      timerValue--;
-      if (timerValue < 0) {
+      setTimer((timerValue -= 1));
+      if (timerValue == 0) {
         clearInterval(time);
         setRemovePreload(time);
       }
@@ -18,15 +20,14 @@ function Preload() {
   };
   useEffect(() => {
     countdown(countDownValue);
-  });
+  }, []);
 
   return (
     <>
       <PreloadContainer>
-        <div
-          className={`countdown ${removePreload ? "remove" : ""}`}
-          ref={timeRef}
-        ></div>
+        <div className={`countdown ${removePreload ? "remove" : ""}`}>
+          <h1>{timer}</h1>
+        </div>
       </PreloadContainer>
     </>
   );
@@ -43,7 +44,10 @@ const PreloadContainer = styled.div`
     align-items: center;
     position: fixed;
     z-index: 9999;
-    transition: all 0.3s ease-out;
+    transition: all 0.1s ease-out;
+    h1 {
+      font-size: 4rem;
+    }
   }
   .countdown.remove {
     opacity: 0;

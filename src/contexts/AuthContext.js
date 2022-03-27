@@ -26,11 +26,11 @@ export function AuthProvider({ children }) {
 
   // get information after user signs in successfully using the observer onAuthStateChanged
   useEffect(() => {
-    const unsubscibe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
       setLoading(false);
     });
-    return unsubscibe;
+    return unsubscribe;
   }, []);
 
   const value = {
