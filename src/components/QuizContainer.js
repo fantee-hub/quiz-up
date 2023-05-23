@@ -36,8 +36,9 @@ function QuizContainer() {
     quizzes.results &&
     quizzes.results.length &&
     quizzes.results[counter].correct_answer;
-  const copiedAnswer = [...inCorrectAnswers];
-  const answers = copiedAnswer.concat(correctAnswer);
+  console.log(inCorrectAnswers);
+  const copiedAnswer = inCorrectAnswers && [...inCorrectAnswers];
+  const answers = copiedAnswer && copiedAnswer.concat(correctAnswer);
   const strToDecode =
     quizzes.results &&
     quizzes.results.length &&
@@ -56,7 +57,7 @@ function QuizContainer() {
   ).body.textContent;
 
   function shuffleAnswers(array) {
-    let currentIndex = array.length,
+    let currentIndex = array && array.length,
       randomIndex;
     while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
