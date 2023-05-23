@@ -76,6 +76,7 @@ function QuizContainer() {
       setTheOptions(shuffleAnswers(answers));
     }
     console.log("hey");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counter]);
 
   useEffect(() => {
@@ -99,6 +100,7 @@ function QuizContainer() {
       setShowResult(null);
       setShowQuiz(null);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadNextQue = () => {
