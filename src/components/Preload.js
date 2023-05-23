@@ -20,6 +20,7 @@ function Preload() {
   };
   useEffect(() => {
     countdown(countDownValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
