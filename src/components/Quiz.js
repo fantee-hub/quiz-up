@@ -37,7 +37,7 @@ function Quiz() {
   return (
     <CategoryPage>
       <div className="category-container">
-        <h1>{category}</h1>
+        <h1>{category && category}</h1>
         <button onClick={fetchQuizHandler}>
           Click here to progress to quiz
         </button>

@@ -9,7 +9,7 @@ import { faCrown } from "@fortawesome/free-solid-svg-icons";
 
 function QuizContainer() {
   const { quizzes, isLoaded } = useSelector(getQuizzes);
-  const totalQuizLength = quizzes.results.length;
+  const totalQuizLength = quizzes.results && quizzes.results.length;
 
   const [counter, setCounter] = useState(0);
   const [allOptions, setAllOptions] = useState(null);
@@ -28,11 +28,20 @@ function QuizContainer() {
 
   let quizTImevalue = 15;
 
-  const inCorrectAnswers = quizzes.results[counter].incorrect_answers;
-  const correctAnswer = quizzes.results[counter].correct_answer;
+  const inCorrectAnswers =
+    quizzes.results &&
+    quizzes.results.length &&
+    quizzes.results[counter].incorrect_answers;
+  const correctAnswer =
+    quizzes.results &&
+    quizzes.results.length &&
+    quizzes.results[counter].correct_answer;
   const copiedAnswer = [...inCorrectAnswers];
   const answers = copiedAnswer.concat(correctAnswer);
-  const strToDecode = quizzes.results[counter].question;
+  const strToDecode =
+    quizzes.results &&
+    quizzes.results.length &&
+    quizzes.results[counter].question;
 
   const [theOptions, setTheOptions] = useState(shuffleAnswers(answers));
   // decode special character codes
@@ -172,7 +181,7 @@ function QuizContainer() {
 
   const resultHandler = () => {
     history("/");
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
   return (
