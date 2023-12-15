@@ -13,6 +13,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   const location = useLocation();
+
   return (
     <AuthProvider>
       <div className="App">
