@@ -29,6 +29,7 @@ export default function Home() {
     amount: 5,
     difficulty: "easy",
     countDown: 5,
+    points: 0,
   };
 
   function reducer(state, action) {
@@ -70,13 +71,39 @@ export default function Home() {
           ...state,
           status: "active",
         };
+      case "newAnswer":
+        const currentQuestion = state.questions[state.index];
+        return {
+          ...state,
+          answer: action.payload,
+          points:
+            action.payload === currentQuestion.correct_answer
+              ? state.points + 10
+              : state.points,
+        };
+      case "nextQuestion":
+        return {
+          ...state,
+          index: state.index + 1,
+          answer: null,
+        };
+
       default:
         throw new Error("Unknown Action");
     }
   }
 
   const [
-    { questions, status, index, amount, difficulty, categoryId, countDown },
+    {
+      questions,
+      status,
+      index,
+      amount,
+      difficulty,
+      categoryId,
+      countDown,
+      answer,
+    },
     dispatch,
   ] = useReducer(reducer, initialState);
 
@@ -106,20 +133,30 @@ export default function Home() {
     getCategoryList();
   }, []);
 
-  useEffect(() => {
-    const getQuiz = async () => {
-      try {
-        const quizData = await fetchQuiz(amount, categoryId, difficulty);
-        if (quizData) {
-          dispatch({ type: "receivedData", payload: quizData.data.results });
-        }
-      } catch (e) {
-        dispatch({ type: "dataFailed" });
-        console.log(e);
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const getQuiz = async () => {
+    try {
+      const quizData = await fetchQuiz(amount, categoryId, difficulty);
+      if (quizData) {
+        dispatch({ type: "receivedData", payload: quizData.data.results });
       }
-    };
+    } catch (e) {
+      if (e.response && e.response.status === 429) {
+        // If it's a 429 error (rate limit), wait for 5 seconds and try again
+        await delay(5000);
+        return;
+      } else {
+        dispatch({ type: "dataFailed" });
+      }
+      console.log(e);
+    }
+  };
+  useEffect(() => {
     getQuiz();
   }, [amount, categoryId, difficulty]);
+
+  const numberOfQuestions = questions.length;
+  console.log(numberOfQuestions);
 
   return (
     <>
@@ -137,7 +174,7 @@ export default function Home() {
         </div>
 
         {status === "loading" && <Loader />}
-        {status === "error" && <Error />}
+        {status === "error" && <Error dispatch={dispatch} />}
         {status === "ready" && (
           <HomeContent>
             <Header />
@@ -156,7 +193,13 @@ export default function Home() {
 
         {status === "active" && (
           <>
-            <Questions />
+            <Questions
+              question={questions[index]}
+              answer={answer}
+              dispatch={dispatch}
+              numberOfQuestions={numberOfQuestions}
+              index={index}
+            />
           </>
         )}
       </HomeContainer>
