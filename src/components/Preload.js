@@ -1,33 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-function Preload() {
-  const [removePreload, setRemovePreload] = useState(null);
-
-  const [timer, setTimer] = useState(5);
-
-  let countDownValue = 5;
-
-  let time;
-  const countdown = (timerValue) => {
-    time = setInterval(() => {
-      setTimer((timerValue -= 1));
-      if (timerValue === 0) {
-        clearInterval(time);
-        setRemovePreload(time);
-      }
-    }, 1000);
-  };
+function Preload({ dispatch, countDown }) {
   useEffect(() => {
-    countdown(countDownValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const timer = setInterval(() => dispatch({ type: "countDown" }), 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [dispatch]);
 
   return (
     <>
       <PreloadContainer>
-        <div className={`countdown ${removePreload ? "remove" : ""}`}>
-          <h1>{timer}</h1>
+        <div className="countdown">
+          <h1>{countDown}</h1>
         </div>
       </PreloadContainer>
     </>
@@ -44,16 +30,16 @@ const PreloadContainer = styled.div`
     justify-content: center;
     align-items: center;
     position: fixed;
+    top: 30%;
+    bottom: 0;
+    left: 50%;
+    margin: 0 auto;
+    transform: translate(-50%, -30%);
     z-index: 9999;
     transition: all 0.1s ease-out;
     h1 {
       font-size: 4rem;
     }
-  }
-  .countdown.remove {
-    opacity: 0;
-    transform: translateY(-100%);
-    pointer-events: none;
   }
 `;
 export default Preload;

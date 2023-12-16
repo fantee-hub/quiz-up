@@ -9,6 +9,7 @@ const Globalstyles = createGlobalStyle`
     }
     body{
         font-family: 'Nunito Sans', sans-serif;
+        background: #e0e0e0;
     }
     a{
         text-decoration: none;

@@ -7,6 +7,11 @@ import { fetchCategory, fetchQuiz } from "../utils";
 import TotalQuestion from "./TotalQuestion";
 import Difficulty from "./Difficulty";
 import Header from "./Header";
+import Loader from "./Loader";
+import Error from "./Error";
+import Start from "./Start";
+import Preload from "./Preload";
+import Questions from "./Questions";
 
 export default function Home() {
   const [error, setError] = useState("");
@@ -23,6 +28,7 @@ export default function Home() {
     categoryId: 9,
     amount: 5,
     difficulty: "easy",
+    countDown: 5,
   };
 
   function reducer(state, action) {
@@ -53,13 +59,24 @@ export default function Home() {
           ...state,
           amount: action.payload,
         };
+      case "countDown":
+        return {
+          ...state,
+          status: state.countDown === 0 ? "active" : "countdown",
+          countDown: state.countDown - 1,
+        };
+      case "start":
+        return {
+          ...state,
+          status: "active",
+        };
       default:
         throw new Error("Unknown Action");
     }
   }
 
   const [
-    { questions, status, index, amount, difficulty, categoryId },
+    { questions, status, index, amount, difficulty, categoryId, countDown },
     dispatch,
   ] = useReducer(reducer, initialState);
 
@@ -107,7 +124,7 @@ export default function Home() {
   return (
     <>
       <HomeContainer>
-        <div className="container">
+        <div>
           {error && <div>{error}</div>}
           <div className="home-header">
             <button onClick={logOutHandler} className="logout">
@@ -118,12 +135,30 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <Header />
-        <HomeContent>
-          <Dropdown category={category} dispatch={dispatch} />
-          <Difficulty dispatch={dispatch} />
-          <TotalQuestion amount={amount} dispatch={dispatch} />
-        </HomeContent>
+
+        {status === "loading" && <Loader />}
+        {status === "error" && <Error />}
+        {status === "ready" && (
+          <HomeContent>
+            <Header />
+            <Dropdowns>
+              <Dropdown category={category} dispatch={dispatch} />
+              <Difficulty dispatch={dispatch} difficulty={difficulty} />
+              <TotalQuestion amount={amount} dispatch={dispatch} />
+            </Dropdowns>
+            <Start dispatch={dispatch} />
+          </HomeContent>
+        )}
+
+        {status === "countdown" && (
+          <Preload dispatch={dispatch} countDown={countDown} />
+        )}
+
+        {status === "active" && (
+          <>
+            <Questions />
+          </>
+        )}
       </HomeContainer>
     </>
   );
@@ -131,8 +166,6 @@ export default function Home() {
 
 const HomeContainer = styled.div`
   padding: 2rem 5rem;
-  min-height: 100vh;
-  background: #e0e0e0;
 
   .home-header {
     display: flex;
@@ -163,7 +196,10 @@ const HomeContainer = styled.div`
 `;
 
 const HomeContent = styled.div`
-  padding: 5rem 0;
+  padding: 2rem 0 0 0;
+`;
+
+const Dropdowns = styled.div`
   display: flex;
   justify-content: space-between;
 `;
