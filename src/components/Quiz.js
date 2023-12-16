@@ -14,19 +14,19 @@ function Quiz() {
   const dispatch = useDispatch();
   const history = useNavigate();
 
-  useEffect(() => {
-    const fetchQuiz = async () => {
-      const response = await quizApi
-        .get(
-          `?amount=10&category=${categoryNumber}&difficulty=hard&type=multiple`
-        )
-        .catch((err) => {
-          console.log(err);
-        });
-      dispatch(fetchQuizzes(response.data));
-    };
-    fetchQuiz();
-  });
+  // useEffect(() => {
+  //   const fetchQuiz = async () => {
+  //     const response = await quizApi
+  //       .get(
+  //         `?amount=10&category=${categoryNumber}&difficulty=hard&type=multiple`
+  //       )
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //     dispatch(fetchQuizzes(response.data));
+  //   };
+  //   fetchQuiz();
+  // });
 
   const fetchQuizHandler = () => {
     if (!isLoaded) {

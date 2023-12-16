@@ -1,32 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import styled from "styled-components";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import generalKnowledge from "../components/images/gk.png";
-import music from "../components/images/music.png";
-import science from "../components/images/science.png";
-import sport from "../components/images/ball.png";
-import tv from "../components/images/tv.png";
-import game from "../components/images/game.png";
-import animals from "../components/images/animals.png";
-import maths from "../components/images/maths.png";
-import anime from "../components/images/anime.png";
+import Dropdown from "./Dropdown";
+import { fetchCategory, fetchQuiz } from "../utils";
+import TotalQuestion from "./TotalQuestion";
+import Difficulty from "./Difficulty";
 
 export default function Home() {
   const [error, setError] = useState("");
-
-  const {
-    logout,
-    currentUser,
-    categoryNumber,
-    setCategoryNumber,
-
-    setCategory,
-  } = useAuth();
-
+  const [category, setCategory] = useState([]);
+  const { logout, currentUser } = useAuth();
   const history = useNavigate();
 
-  console.log(categoryNumber);
+  const initialState = {
+    questions: [],
+    //loading, ready, error, finished, active
+    status: "loading",
+    answer: null,
+    index: 0,
+    categoryId: 9,
+    amount: 5,
+    difficulty: "easy",
+  };
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case "receivedData":
+        return {
+          ...state,
+          questions: action.payload,
+          status: "ready",
+        };
+      case "dataFailed":
+        return {
+          ...state,
+          status: "error",
+        };
+      case "newCategory":
+        return {
+          ...state,
+          categoryId: action.payload,
+        };
+      case "newDifficulty":
+        return {
+          ...state,
+          difficulty: action.payload,
+        };
+      case "newAmount":
+        return {
+          ...state,
+          amount: action.payload,
+        };
+      default:
+        throw new Error("Unknown Action");
+    }
+  }
+
+  const [
+    { questions, status, index, amount, difficulty, categoryId },
+    dispatch,
+  ] = useReducer(reducer, initialState);
+
   const logOutHandler = async (e) => {
     e.preventDefault();
     setError("");
@@ -38,59 +73,35 @@ export default function Home() {
     }
   };
 
-  const quizCategories = [
-    {
-      category: "General Knowledge",
-      categoryNo: 9,
-    },
-    {
-      category: "Music",
-      categoryNo: 12,
-    },
-    {
-      category: "Science",
-      categoryNo: 17,
-    },
-    {
-      category: "Sports",
-      categoryNo: 21,
-    },
-    {
-      category: "TV",
-      categoryNo: 14,
-    },
-    {
-      category: "Video Games",
-      categoryNo: 15,
-    },
-    {
-      category: "Animals",
-      categoryNo: 27,
-    },
-    {
-      category: "Mathematics",
-      categoryNo: 19,
-    },
-    {
-      category: "Anime",
-      categoryNo: 31,
-    },
-  ];
-  const quizHandler = (e) => {
-    quizCategories.map((categories) => {
-      if (
-        e.target.textContent === categories.category ||
-        e.target.alt === categories.category
-      ) {
-        setCategoryNumber(categories.categoryNo.toString());
-        setCategory(categories.category);
+  const getCategoryList = async () => {
+    try {
+      const categoryData = await fetchCategory();
+      if (categoryData) {
+        setCategory(categoryData.data.trivia_categories);
       }
-      return null;
-    });
-    console.log(e.target.alt);
-
-    history("/quiz");
+    } catch (e) {
+      console.log(e);
+    }
   };
+
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  useEffect(() => {
+    const getQuiz = async () => {
+      try {
+        const quizData = await fetchQuiz(amount, categoryId, difficulty);
+        if (quizData) {
+          dispatch({ type: "receivedData", payload: quizData.data.results });
+        }
+      } catch (e) {
+        dispatch({ type: "dataFailed" });
+        console.log(e);
+      }
+    };
+    getQuiz();
+  }, [amount, categoryId, difficulty]);
 
   return (
     <>
@@ -98,80 +109,19 @@ export default function Home() {
         <div className="container">
           {error && <div>{error}</div>}
           <div className="home-header">
-            <button onClick={logOutHandler}>Log out</button>
+            <button onClick={logOutHandler} className="logout">
+              Log out
+            </button>
             <div className="user-email">
               <span>{currentUser.email}</span>
             </div>
           </div>
-
-          <div className="home-content">
-            <div className="header">
-              <h1>Choose a category</h1>
-            </div>
-            <div className="categories">
-              <div className="category-content">
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={generalKnowledge} alt="General Knowledge" />
-                  </span>
-                  General Knowledge
-                </div>
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={science} alt="Science" />
-                  </span>
-                  Science
-                </div>
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={animals} alt="Animals" />
-                  </span>
-                  Animals
-                </div>
-              </div>
-              <div className="category-content">
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={music} alt="Music" />
-                  </span>
-                  Music
-                </div>
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={sport} alt="Sports" />
-                  </span>
-                  Sports
-                </div>
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={maths} alt="Mathematics" />
-                  </span>
-                  Mathematics
-                </div>
-              </div>
-              <div className="category-content">
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={tv} alt="TV" />
-                  </span>
-                  TV
-                </div>
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={game} alt="Video Games" />
-                  </span>
-                  Video Games
-                </div>
-                <div onClick={quizHandler}>
-                  <span>
-                    <img src={anime} alt="Anime" />
-                  </span>
-                  Anime
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
+        <HomeContent>
+          <Dropdown category={category} dispatch={dispatch} />
+          <Difficulty dispatch={dispatch} />
+          <TotalQuestion amount={amount} dispatch={dispatch} />
+        </HomeContent>
       </HomeContainer>
     </>
   );
@@ -190,7 +140,7 @@ const HomeContainer = styled.div`
       color: #646464;
     }
   }
-  button {
+  .logout {
     padding: 0.7rem 1.5rem;
     margin-bottom: 1rem;
     outline: none;
@@ -199,7 +149,7 @@ const HomeContainer = styled.div`
     background: #e0e0e0;
     box-shadow: 20px 20px 47px #cecece, -20px -20px 47px #f2f2f2;
     cursor: pointer;
-    color: #808080;
+    color: #000;
     text-transform: capitalize;
     font-weight: 600;
     font-family: "Nunito Sans", sans-serif;
@@ -208,45 +158,10 @@ const HomeContainer = styled.div`
       box-shadow: inset 20px 20px 47px #cecece, inset -20px -20px 47px #f2f2f2;
     }
   }
-  .home-content {
-    .header {
-      text-align: center;
-      color: #5a5a5a;
-    }
-    .categories {
-      padding-top: 2rem;
+`;
 
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      justify-items: center;
-      align-items: center;
-
-      .category-content div {
-        border-radius: 0.3rem;
-        border-radius: 10px;
-
-        background: #e0e0e0;
-        box-shadow: inset 20px 20px 47px #cecece, inset -20px -20px 47px #f2f2f2;
-        color: #808080;
-        width: 12rem;
-
-        padding: 2rem 0rem;
-        text-align: center;
-        margin-bottom: 2rem;
-        cursor: pointer;
-        span {
-          display: block;
-          padding-bottom: 0.5rem;
-          img {
-            width: 5rem;
-            height: 5rem;
-            object-fit: contain;
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 600px) {
-    padding: 2rem 1rem;
-  }
+const HomeContent = styled.div`
+  padding: 5rem 0;
+  display: flex;
+  justify-content: space-between;
 `;
