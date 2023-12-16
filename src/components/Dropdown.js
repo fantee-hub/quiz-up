@@ -14,6 +14,7 @@ const Dropdown = ({ category, dispatch }) => {
   useEffect(() => {
     if (category.length > 0) setCategoryContent(category[0].name);
   }, [category]);
+
   return (
     <DropdownContainer>
       <h2>Select a Category</h2>

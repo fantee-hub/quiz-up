@@ -47,7 +47,6 @@ const DropdownContainer = styled.div`
   h2 {
     padding-bottom: 2rem;
   }
-
   button {
     width: 100%;
     height: 80px;

@@ -62,6 +62,7 @@ const DropdownContainer = styled.div`
     border-radius: 10px;
     font-size: 18px;
     font-family: "Nunito Sans", sans-serif;
+    text-transform: capitalize;
   }
   .dropdown-content {
     position: absolute;
@@ -86,7 +87,7 @@ const DropdownContainer = styled.div`
     .dropdown-list {
       padding: 16px;
       cursor: pointer;
-
+      text-transform: capitalize;
       &:hover {
         background-color: #eee;
       }

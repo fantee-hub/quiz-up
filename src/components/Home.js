@@ -6,6 +6,7 @@ import Dropdown from "./Dropdown";
 import { fetchCategory, fetchQuiz } from "../utils";
 import TotalQuestion from "./TotalQuestion";
 import Difficulty from "./Difficulty";
+import Header from "./Header";
 
 export default function Home() {
   const [error, setError] = useState("");
@@ -117,6 +118,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <Header />
         <HomeContent>
           <Dropdown category={category} dispatch={dispatch} />
           <Difficulty dispatch={dispatch} />
