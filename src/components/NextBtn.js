@@ -18,7 +18,12 @@ const NextBtn = ({ index, answer, dispatch, numberOfQuestions }) => {
   if (index === numberOfQuestions - 1)
     return (
       <NextButtonContainer>
-        <button className="next-btn">Finish</button>
+        <button
+          className="next-btn"
+          onClick={() => dispatch({ type: "finish" })}
+        >
+          Finish
+        </button>
       </NextButtonContainer>
     );
 };

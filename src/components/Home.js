@@ -12,6 +12,7 @@ import Error from "./Error";
 import Start from "./Start";
 import Preload from "./Preload";
 import Questions from "./Questions";
+import Finish from "./Finish";
 
 export default function Home() {
   const [error, setError] = useState("");
@@ -87,6 +88,17 @@ export default function Home() {
           index: state.index + 1,
           answer: null,
         };
+      case "finish":
+        return {
+          ...state,
+          status: "finished",
+        };
+      case "restart":
+        return {
+          ...initialState,
+          questions: state.questions,
+          status: "ready",
+        };
 
       default:
         throw new Error("Unknown Action");
@@ -103,6 +115,7 @@ export default function Home() {
       categoryId,
       countDown,
       answer,
+      points,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
@@ -201,6 +214,14 @@ export default function Home() {
               index={index}
             />
           </>
+        )}
+
+        {status === "finished" && (
+          <Finish
+            dispatch={dispatch}
+            points={points}
+            numberOfQuestions={numberOfQuestions}
+          />
         )}
       </HomeContainer>
     </>
