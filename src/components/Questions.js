@@ -21,7 +21,9 @@ const Questions = ({
           <div className="title">Quiz Down</div>
           <div className="timer">
             <div className="time-text">Time Left</div>
-            <div className={`time-sec ${timeRemaining <= 5 ? "time-off" : ""}`}>
+            <div
+              className={`time-sec ${timeRemaining <= 59 ? "time-off" : ""}`}
+            >
               <TimeRemaining
                 dispatch={dispatch}
                 timeRemaining={timeRemaining}

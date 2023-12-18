@@ -10,8 +10,8 @@ const TimeRemaining = ({ dispatch, timeRemaining }) => {
   }, [dispatch]);
   return (
     <div>
-      {mins < 9 && "0"}
-      {mins}:{secs < 9 && "0"}
+      {mins < 10 && "0"}
+      {mins}:{secs < 10 && "0"}
       {secs}
     </div>
   );

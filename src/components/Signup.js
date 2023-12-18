@@ -7,7 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
 import { css } from "@emotion/react";
-import ClipLoader from "react-spinners/ClipLoader";
+import Loader from "react-spinners/ClipLoader";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -144,12 +144,7 @@ export default function Signup() {
               Create account
             </button>
             <div className="spinner">
-              <ClipLoader
-                color={"#ffffff"}
-                loading={loading}
-                css={override}
-                size={35}
-              />
+              <Loader color="#ffffff" loading={loading} size={35} />
             </div>
           </div>
         </form>

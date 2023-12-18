@@ -162,6 +162,7 @@ export default function Home() {
   const getQuiz = async () => {
     try {
       const quizData = await fetchQuiz(amount, categoryId, difficulty);
+
       if (quizData) {
         dispatch({ type: "receivedData", payload: quizData.data.results });
       }
@@ -205,8 +206,8 @@ export default function Home() {
             <Header />
             <Dropdowns>
               <Dropdown category={category} dispatch={dispatch} />
-              <Difficulty dispatch={dispatch} difficulty={difficulty} />
               <TotalQuestion amount={amount} dispatch={dispatch} />
+              <Difficulty dispatch={dispatch} difficulty={difficulty} />
             </Dropdowns>
             <Start dispatch={dispatch} />
           </HomeContent>
