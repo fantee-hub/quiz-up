@@ -19,10 +19,11 @@ export default function Home() {
   const [category, setCategory] = useState([]);
   const { logout, currentUser } = useAuth();
   const history = useNavigate();
+  const TIME_PER_QUESTION = 30;
 
   const initialState = {
     questions: [],
-    //loading, ready, error, finished, active
+    //loading, ready, error, finished, active, countdown
     status: "loading",
     answer: null,
     index: 0,
@@ -31,6 +32,7 @@ export default function Home() {
     difficulty: "easy",
     countDown: 5,
     points: 0,
+    timeRemaining: null,
   };
 
   function reducer(state, action) {
@@ -66,6 +68,8 @@ export default function Home() {
           ...state,
           status: state.countDown === 0 ? "active" : "countdown",
           countDown: state.countDown - 1,
+          timeRemaining:
+            state.countDown === 0 ? state.questions.length * 30 : null,
         };
       case "start":
         return {
@@ -87,6 +91,11 @@ export default function Home() {
           ...state,
           index: state.index + 1,
           answer: null,
+        };
+      case "tick":
+        return {
+          ...state,
+          timeRemaining: state.timeRemaining - 1,
         };
       case "finish":
         return {
@@ -116,6 +125,7 @@ export default function Home() {
       countDown,
       answer,
       points,
+      timeRemaining,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
@@ -147,6 +157,7 @@ export default function Home() {
   }, []);
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   const getQuiz = async () => {
     try {
       const quizData = await fetchQuiz(amount, categoryId, difficulty);
@@ -164,12 +175,12 @@ export default function Home() {
       console.log(e);
     }
   };
+
   useEffect(() => {
     getQuiz();
   }, [amount, categoryId, difficulty]);
 
   const numberOfQuestions = questions.length;
-  console.log(numberOfQuestions);
 
   return (
     <>
@@ -212,6 +223,7 @@ export default function Home() {
               dispatch={dispatch}
               numberOfQuestions={numberOfQuestions}
               index={index}
+              timeRemaining={timeRemaining}
             />
           </>
         )}

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Options from "./Options";
 import NextBtn from "./NextBtn";
+import TimeRemaining from "./TimeRemaining";
 
 const Questions = ({
   dispatch,
@@ -9,6 +10,7 @@ const Questions = ({
   answer,
   index,
   numberOfQuestions,
+  timeRemaining,
 }) => {
   const parser = new DOMParser();
 
@@ -17,6 +19,9 @@ const Questions = ({
       <div className="show-quiz">
         <header>
           <div className="title">Quiz Down</div>
+          <div className="timer">
+            <TimeRemaining dispatch={dispatch} timeRemaining={timeRemaining} />
+          </div>
         </header>
         <section>
           <div className="que-text">
