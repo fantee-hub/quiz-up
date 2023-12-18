@@ -96,6 +96,7 @@ export default function Home() {
         return {
           ...state,
           timeRemaining: state.timeRemaining - 1,
+          status: state.timeRemaining === 0 ? "finished" : state.status,
         };
       case "finish":
         return {

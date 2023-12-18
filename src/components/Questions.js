@@ -20,7 +20,13 @@ const Questions = ({
         <header>
           <div className="title">Quiz Down</div>
           <div className="timer">
-            <TimeRemaining dispatch={dispatch} timeRemaining={timeRemaining} />
+            <div className="time-text">Time Left</div>
+            <div className={`time-sec ${timeRemaining <= 5 ? "time-off" : ""}`}>
+              <TimeRemaining
+                dispatch={dispatch}
+                timeRemaining={timeRemaining}
+              />
+            </div>
           </div>
         </header>
         <section>
@@ -85,6 +91,24 @@ const QuizBox = styled.div`
       .title {
         font-size: 1.25rem;
         font-weight: 600;
+      }
+      .timer {
+        display: flex;
+        column-gap: 1rem;
+        background: #19bc8b;
+        padding: 0.6rem;
+        color: #f0f0f0;
+        border-radius: 0.3rem;
+        .time-sec {
+          font-weight: 600;
+        }
+        .time-sec.time-off {
+          color: red;
+        }
+        .time-text {
+          user-select: none;
+          font-weight: 400;
+        }
       }
     }
     section {
