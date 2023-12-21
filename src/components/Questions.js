@@ -71,16 +71,11 @@ const QuizBox = styled.div`
   background: #e0e0e0;
   .show-quiz {
     width: 30rem;
+
     box-shadow: -20px 20px 60px #bebebe, 20px -20px 60px #ffffff;
     border-radius: 0.3rem;
     @media screen and (max-width: 700px) {
-      width: 25rem;
-    }
-    @media screen and (max-width: 450px) {
-      max-width: 23rem;
-    }
-    @media screen and (max-width: 380px) {
-      max-width: 20rem;
+      width: 100%;
     }
 
     header {

@@ -273,6 +273,9 @@ const HomeContainer = styled.div`
       box-shadow: inset 20px 20px 47px #cecece, inset -20px -20px 47px #f2f2f2;
     }
   }
+  @media screen and (max-width: 756px) {
+    padding: 1rem;
+  }
 `;
 
 const HomeContent = styled.div`
@@ -282,4 +285,11 @@ const HomeContent = styled.div`
 const Dropdowns = styled.div`
   display: flex;
   justify-content: space-between;
+  @media screen and (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+  }
 `;

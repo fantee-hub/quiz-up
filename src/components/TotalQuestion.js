@@ -66,6 +66,7 @@ const DropdownContainer = styled.div`
   .dropdown-content {
     position: absolute;
     top: 160px;
+    z-index: 99;
     display: flex;
     flex-direction: column;
     gap: 10px;
