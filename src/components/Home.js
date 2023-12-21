@@ -69,7 +69,9 @@ export default function Home() {
           status: state.countDown === 0 ? "active" : "countdown",
           countDown: state.countDown - 1,
           timeRemaining:
-            state.countDown === 0 ? state.questions.length * 30 : null,
+            state.countDown === 0
+              ? state.questions.length * TIME_PER_QUESTION
+              : null,
         };
       case "start":
         return {
