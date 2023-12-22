@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { css } from "@emotion/react";
 import Loader from "react-spinners/ClipLoader";
 
 export default function Signin() {
@@ -39,9 +38,6 @@ export default function Signin() {
     setLoading(false);
   };
 
-  const override = css`
-    border-color: #ffffff;
-  `;
   const buttonDisable = {
     background: "#8a93f7",
   };
