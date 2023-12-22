@@ -161,26 +161,25 @@ export default function Home() {
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const getQuiz = async () => {
-    try {
-      const quizData = await fetchQuiz(amount, categoryId, difficulty);
-
-      if (quizData) {
-        dispatch({ type: "receivedData", payload: quizData.data.results });
-      }
-    } catch (e) {
-      if (e.response && e.response.status === 429) {
-        // If it's a 429 error (rate limit), wait for 5 seconds and try again
-        await delay(5000);
-        return;
-      } else {
-        dispatch({ type: "dataFailed" });
-      }
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
+    const getQuiz = async () => {
+      try {
+        const quizData = await fetchQuiz(amount, categoryId, difficulty);
+
+        if (quizData) {
+          dispatch({ type: "receivedData", payload: quizData.data.results });
+        }
+      } catch (e) {
+        if (e.response && e.response.status === 429) {
+          // If it's a 429 error (rate limit), wait for 5 seconds and try again
+          await delay(5000);
+          return;
+        } else {
+          dispatch({ type: "dataFailed" });
+        }
+        console.log(e);
+      }
+    };
     getQuiz();
   }, [amount, categoryId, difficulty]);
 
