@@ -66,10 +66,10 @@ export default function Home() {
       case "countDown":
         return {
           ...state,
-          status: state.countDown === 0 ? "active" : "countdown",
+          status: state.countDown === 1 ? "active" : "countdown",
           countDown: state.countDown - 1,
           timeRemaining:
-            state.countDown === 0
+            state.countDown === 1
               ? state.questions.length * TIME_PER_QUESTION
               : null,
         };
